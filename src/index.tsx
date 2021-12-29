@@ -14,6 +14,14 @@ const GlobalStyle = createGlobalStyle`
   body {
     background: #353539;
   }
+  
+  svg { 
+    display: block;
+  }
+  
+  ul {
+    list-style-type: none;
+  }
 `;
 
 ReactDOM.render(
