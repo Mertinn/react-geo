@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
+import Sidemap from "./components/Sidemap";
 
 const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
 const defaultCoords = {
-  latitude: 39.8355,
-  longitude: 99.0909,
+  latitude: 37.09024,
+  longitude: -95.712891,
 };
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
       center: new Microsoft.Maps.Location(34.054713, -118.223331),
     });
 
-    new Microsoft.Maps.Map("#map", {
+    const map = new Microsoft.Maps.Map("#sidemap", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.road,
       disableStreetside: true,
@@ -29,7 +30,7 @@ function App() {
         defaultCoords.latitude,
         defaultCoords.longitude
       ),
-      zoom: 1,
+      zoom: 3,
       showBreadcrumb: false,
       showDashboard: false,
       showLogo: false,
@@ -40,21 +41,24 @@ function App() {
       showTrafficButton: false,
       showZoomButtons: false,
     });
+    Microsoft.Maps.Events.addHandler(map, "click", (e) => {
+      if (!e || !("location" in e)) return;
+      const location = new Microsoft.Maps.Location(
+        e.location.latitude,
+        e.location.longitude
+      );
+
+      const pin = new Microsoft.Maps.Pushpin(location, {
+        title: "Your guess",
+      });
+      map.entities.setPrimitives([pin]);
+    });
   }, []);
 
   return (
     <div className="App">
       <div id="street-view" style={{ width: "100%", height: "100vh" }} />
-      <div
-        id="map"
-        style={{
-          position: "absolute",
-          left: 0,
-          bottom: "20%",
-          width: "30%",
-          height: "30vh",
-        }}
-      />
+      <Sidemap id={"sidemap"} />
     </div>
   );
 }
