@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidemap from "./components/Sidemap";
 
 const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
@@ -15,6 +15,7 @@ const defaultCoords = {
 
 function App() {
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
+  const [guessMessage, setGuessMessage] = useState("");
 
   const addPushpin = (
     geoLocation: { latitude: number; longitude: number },
@@ -44,28 +45,32 @@ function App() {
 
     addPushpin({ ...defaultCoords.streetView }, "Location", false);
 
-    const pushpins = Microsoft.Maps.TestDataGenerator.getPushpins(2);
+    // const pushpins = Microsoft.Maps.TestDataGenerator.getPushpins(10);
+    const pushpins = mapRef.current.entities.getPrimitives();
 
     if (!Array.isArray(pushpins)) return;
 
     const polyline = new Microsoft.Maps.Polyline(
+      // @ts-ignore
       [pushpins[0].getLocation(), pushpins[1].getLocation()],
       { strokeThickness: 2 }
     );
     mapRef.current.entities.push(polyline);
 
     Microsoft.Maps.loadModule("Microsoft.Maps.SpatialMath", () => {
-      console.log(
-        Microsoft.Maps.SpatialMath.getDistanceTo(
-          pushpins[0].getLocation(),
-          pushpins[1].getLocation(),
-          Microsoft.Maps.SpatialMath.DistanceUnits.Kilometers
-        )
+      const distance = Microsoft.Maps.SpatialMath.getDistanceTo(
+        // @ts-ignore
+        pushpins[0].getLocation(),
+        // @ts-ignore
+        pushpins[1].getLocation(),
+        Microsoft.Maps.SpatialMath.DistanceUnits.Kilometers
       );
+      setGuessMessage(`${Math.round(distance)} kilometers away`);
+      setTimeout(() => setGuessMessage(""), 2000);
     });
   };
 
-  useEffect(() => {
+  const handleLoad = () => {
     new Microsoft.Maps.Map("#street-view", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.streetside,
@@ -110,12 +115,25 @@ function App() {
         true
       );
     });
+  };
+
+  useEffect(() => {
+    // const script = document.getElementById("microsoft");
+    // if (!script) return;
+    //
+    // script.addEventListener("load", () => handleLoad());
+    handleLoad();
   }, []);
 
   return (
     <div className="App">
       <div id="street-view" style={{ width: "100%", height: "100vh" }} />
-      <Sidemap id={"sidemap"} onSubmit={() => handleSubmit()} />
+      <Sidemap
+        id={"sidemap"}
+        onSubmit={() => handleSubmit()}
+        message={guessMessage}
+        isMessageShown={guessMessage !== ""}
+      />
     </div>
   );
 }
