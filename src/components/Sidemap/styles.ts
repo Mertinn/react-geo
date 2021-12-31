@@ -54,7 +54,7 @@ export const ButtonsList = styled.ul`
 export const MessageBox = styled.div<{ isShown: boolean }>`
   position: absolute;
   top: 0;
-  background: rgba(108, 185, 40, 0.7);
+  background: rgba(108, 185, 40, 0.8);
   color: white;
   width: 100%;
   z-index: 999;

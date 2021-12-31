@@ -66,7 +66,6 @@ function App() {
         Microsoft.Maps.SpatialMath.DistanceUnits.Kilometers
       );
       setGuessMessage(`${Math.round(distance)} kilometers away`);
-      setTimeout(() => setGuessMessage(""), 2000);
     });
   };
 
@@ -115,6 +114,60 @@ function App() {
         true
       );
     });
+
+    Microsoft.Maps.loadModule(
+      ["Microsoft.Maps.SpatialDataService", "Microsoft.Maps.Search"],
+      () => {
+        if (!mapRef.current) return;
+
+        const search = new Microsoft.Maps.Search.SearchManager(mapRef.current);
+        search.geocode({
+          where: "US",
+          count: 1,
+          callback: (geocodeResult) => {
+            if (!mapRef.current) return;
+
+            const geoDataRequestOptions = {
+              getAllPolygons: true,
+              getEntityMetadata: true,
+            };
+
+            Microsoft.Maps.SpatialDataService.GeoDataAPIManager.getBoundary(
+              geocodeResult.results[0].location,
+              geoDataRequestOptions,
+              mapRef.current,
+              (data) => {
+                if (!mapRef.current) return;
+                // console.log(data, geocodeResult);
+
+                // console.log(
+                //   Microsoft.Maps.TestDataGenerator.getLocations(
+                //     1,
+                //     // @ts-ignore
+                //     Microsoft.Maps.LocationRect.fromShapes(
+                //       data.results[0].Polygons
+                //     )
+                //   )
+                // );
+
+                // remove alaska and hawaii
+                data.results[0].Polygons.splice(0, 2200);
+                data.results[0].Polygons.splice(0, 2);
+
+                console.log(
+                  // @ts-ignore
+                  Microsoft.Maps.LocationRect.fromShapes(
+                    data.results[0].Polygons
+                  )
+                );
+
+                mapRef.current.entities.push(data.results[0].Polygons);
+              }
+            );
+          },
+        });
+      }
+    );
   };
 
   useEffect(() => {
