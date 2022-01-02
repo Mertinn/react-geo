@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Sidemap from "./components/Sidemap";
+import { usData } from "./geoData";
 
 const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
 const defaultCoords = {
@@ -45,7 +46,6 @@ function App() {
 
     addPushpin({ ...defaultCoords.streetView }, "Location", false);
 
-    // const pushpins = Microsoft.Maps.TestDataGenerator.getPushpins(10);
     const pushpins = mapRef.current.entities.getPrimitives();
 
     if (!Array.isArray(pushpins)) return;
@@ -69,20 +69,68 @@ function App() {
     });
   };
 
-  const handleLoad = () => {
-    new Microsoft.Maps.Map("#street-view", {
-      credentials: key,
-      mapTypeId: Microsoft.Maps.MapTypeId.streetside,
-      streetsideOptions: {
-        showExitButton: false,
-        showCurrentAddress: false,
-        showProblemReporting: false,
-        disablePanoramaNavigation: false,
-        overviewMapMode: Microsoft.Maps.OverviewMapMode.hidden,
-      },
-      center: new Microsoft.Maps.Location(34.054713, -118.223331),
-    });
+  const getRandomLocation = () => {
+    const northwest = new Microsoft.Maps.Location(
+      usData.bounds[0].latitude,
+      usData.bounds[0].longitude
+    );
+    const southeast = new Microsoft.Maps.Location(
+      usData.bounds[2].latitude,
+      usData.bounds[2].longitude
+    );
+    const usRect = Microsoft.Maps.LocationRect.fromCorners(
+      northwest,
+      southeast
+    );
 
+    let generatedLocation: Microsoft.Maps.Location =
+      null as unknown as Microsoft.Maps.Location;
+
+    return new Promise<Microsoft.Maps.Location>((resolve) => {
+      Microsoft.Maps.loadModule(
+        "Microsoft.Maps.SpatialDataService",
+        async () => {
+          const geoDataRequestOptions = {
+            getAllPolygons: true,
+            getEntityMetadata: true,
+          };
+
+          for (;;) {
+            generatedLocation = Microsoft.Maps.TestDataGenerator.getLocations(
+              1,
+              usRect
+            ) as Microsoft.Maps.Location;
+            try {
+              await new Promise<void>((resolveS, rejectS) => {
+                if (!mapRef.current) return;
+
+                Microsoft.Maps.SpatialDataService.GeoDataAPIManager.getBoundary(
+                  generatedLocation,
+                  geoDataRequestOptions,
+                  mapRef.current,
+                  (data) => {
+                    if (
+                      data.results.length === 1 &&
+                      data.results[0].EntityID === usData.entityId.toString()
+                    ) {
+                      resolve(generatedLocation);
+                    } else {
+                      rejectS();
+                    }
+                  }
+                );
+              });
+              break;
+            } catch (e) {
+              continue;
+            }
+          }
+        }
+      );
+    });
+  };
+
+  const handleLoad = async () => {
     mapRef.current = new Microsoft.Maps.Map("#sidemap", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.road,
@@ -115,59 +163,18 @@ function App() {
       );
     });
 
-    Microsoft.Maps.loadModule(
-      ["Microsoft.Maps.SpatialDataService", "Microsoft.Maps.Search"],
-      () => {
-        if (!mapRef.current) return;
-
-        const search = new Microsoft.Maps.Search.SearchManager(mapRef.current);
-        search.geocode({
-          where: "US",
-          count: 1,
-          callback: (geocodeResult) => {
-            if (!mapRef.current) return;
-
-            const geoDataRequestOptions = {
-              getAllPolygons: true,
-              getEntityMetadata: true,
-            };
-
-            Microsoft.Maps.SpatialDataService.GeoDataAPIManager.getBoundary(
-              geocodeResult.results[0].location,
-              geoDataRequestOptions,
-              mapRef.current,
-              (data) => {
-                if (!mapRef.current) return;
-                // console.log(data, geocodeResult);
-
-                // console.log(
-                //   Microsoft.Maps.TestDataGenerator.getLocations(
-                //     1,
-                //     // @ts-ignore
-                //     Microsoft.Maps.LocationRect.fromShapes(
-                //       data.results[0].Polygons
-                //     )
-                //   )
-                // );
-
-                // remove alaska and hawaii
-                data.results[0].Polygons.splice(0, 2200);
-                data.results[0].Polygons.splice(0, 2);
-
-                console.log(
-                  // @ts-ignore
-                  Microsoft.Maps.LocationRect.fromShapes(
-                    data.results[0].Polygons
-                  )
-                );
-
-                mapRef.current.entities.push(data.results[0].Polygons);
-              }
-            );
-          },
-        });
-      }
-    );
+    new Microsoft.Maps.Map("#street-view", {
+      credentials: key,
+      mapTypeId: Microsoft.Maps.MapTypeId.streetside,
+      streetsideOptions: {
+        showExitButton: false,
+        showCurrentAddress: false,
+        showProblemReporting: false,
+        disablePanoramaNavigation: false,
+        overviewMapMode: Microsoft.Maps.OverviewMapMode.hidden,
+      },
+      center: await getRandomLocation(),
+    });
   };
 
   useEffect(() => {
