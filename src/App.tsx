@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Sidemap from "./components/Sidemap";
-import { usData } from "./geoData";
+import { randomLocations } from "./geoData";
 
 const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
 const defaultCoords = {
-  streetView: {
-    latitude: 34.054713,
-    longitude: -118.223331,
-  },
+  streetView:
+    randomLocations[Math.floor(Math.random() * randomLocations.length)],
   map: {
     latitude: 37.09024,
     longitude: -95.712891,
@@ -16,7 +14,15 @@ const defaultCoords = {
 
 function App() {
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
+  const streetsideRef = useRef<Microsoft.Maps.Map | null>(null);
   const [guessMessage, setGuessMessage] = useState("");
+  const [mapBlockedParts, setMapBlockedParts] = useState({
+    buttonsPanel: false,
+    map: false,
+    button: false,
+  });
+  const [mapForceOpacity, setMapForceOpacity] = useState(false);
+  const [isLocationGuessed, setIsLocationGuessed] = useState(false);
 
   const addPushpin = (
     geoLocation: { latitude: number; longitude: number },
@@ -39,6 +45,12 @@ function App() {
     } else {
       mapRef.current.entities.push(pin);
     }
+  };
+
+  const loadStreetLocation = (location: Microsoft.Maps.Location) => {
+    if (!streetsideRef.current) return;
+
+    streetsideRef.current.setView({ center: location });
   };
 
   const handleSubmit = () => {
@@ -67,70 +79,26 @@ function App() {
       );
       setGuessMessage(`${Math.round(distance)} kilometers away`);
     });
+
+    setMapBlockedParts({ map: true, buttonsPanel: true, button: false });
+    setMapForceOpacity(true);
+    setIsLocationGuessed(true);
   };
 
-  const getRandomLocation = () => {
-    const northwest = new Microsoft.Maps.Location(
-      usData.bounds[0].latitude,
-      usData.bounds[0].longitude
+  const handleNext = () => {
+    const randomLocation =
+      randomLocations[Math.floor(Math.random() * randomLocations.length)];
+
+    defaultCoords.streetView = randomLocation;
+    loadStreetLocation(
+      new Microsoft.Maps.Location(
+        randomLocation.latitude,
+        randomLocation.longitude
+      )
     );
-    const southeast = new Microsoft.Maps.Location(
-      usData.bounds[2].latitude,
-      usData.bounds[2].longitude
-    );
-    const usRect = Microsoft.Maps.LocationRect.fromCorners(
-      northwest,
-      southeast
-    );
-
-    let generatedLocation: Microsoft.Maps.Location =
-      null as unknown as Microsoft.Maps.Location;
-
-    return new Promise<Microsoft.Maps.Location>((resolve) => {
-      Microsoft.Maps.loadModule(
-        "Microsoft.Maps.SpatialDataService",
-        async () => {
-          const geoDataRequestOptions = {
-            getAllPolygons: true,
-            getEntityMetadata: true,
-          };
-
-          for (;;) {
-            generatedLocation = Microsoft.Maps.TestDataGenerator.getLocations(
-              1,
-              usRect
-            ) as Microsoft.Maps.Location;
-            try {
-              await new Promise<void>((resolveS, rejectS) => {
-                if (!mapRef.current) return;
-
-                Microsoft.Maps.SpatialDataService.GeoDataAPIManager.getBoundary(
-                  generatedLocation,
-                  geoDataRequestOptions,
-                  mapRef.current,
-                  (data) => {
-                    if (
-                      data.results.length === 1 &&
-                      data.results[0].EntityID === usData.entityId.toString()
-                    ) {
-                      resolve(generatedLocation);
-                    } else {
-                      rejectS();
-                    }
-                  }
-                );
-              });
-              break;
-            } catch (e) {
-              continue;
-            }
-          }
-        }
-      );
-    });
   };
 
-  const handleLoad = async () => {
+  const handleLoad = () => {
     mapRef.current = new Microsoft.Maps.Map("#sidemap", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.road,
@@ -163,17 +131,19 @@ function App() {
       );
     });
 
-    new Microsoft.Maps.Map("#street-view", {
+    streetsideRef.current = new Microsoft.Maps.Map("#street-view", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.streetside,
       streetsideOptions: {
         showExitButton: false,
         showCurrentAddress: false,
         showProblemReporting: false,
-        disablePanoramaNavigation: false,
         overviewMapMode: Microsoft.Maps.OverviewMapMode.hidden,
       },
-      center: await getRandomLocation(),
+      center: new Microsoft.Maps.Location(
+        defaultCoords.streetView.latitude,
+        defaultCoords.streetView.longitude
+      ),
     });
   };
 
@@ -187,15 +157,83 @@ function App() {
 
   return (
     <div className="App">
+      <button onClick={() => handleNext()}>debu</button>
       <div id="street-view" style={{ width: "100%", height: "100vh" }} />
       <Sidemap
         id={"sidemap"}
         onSubmit={() => handleSubmit()}
         message={guessMessage}
         isMessageShown={guessMessage !== ""}
+        setBlockedParts={setMapBlockedParts}
+        blockedParts={mapBlockedParts}
+        forceOpacity={mapForceOpacity}
+        buttonText={isLocationGuessed ? "Next" : "Guess"}
       />
     </div>
   );
 }
 
 export default App;
+
+// Function to generate random location, currently checking if there is a
+// street side view on a given location is impossible
+// const getRandomLocation = () => {
+//   const northwest = new Microsoft.Maps.Location(
+//       usData.bounds[0].latitude,
+//       usData.bounds[0].longitude
+//   );
+//   const southeast = new Microsoft.Maps.Location(
+//       usData.bounds[2].latitude,
+//       usData.bounds[2].longitude
+//   );
+//   const usRect = Microsoft.Maps.LocationRect.fromCorners(
+//       northwest,
+//       southeast
+//   );
+//
+//   let generatedLocation: Microsoft.Maps.Location =
+//       null as unknown as Microsoft.Maps.Location;
+//
+//   return new Promise<Microsoft.Maps.Location>((resolve) => {
+//     Microsoft.Maps.loadModule(
+//         "Microsoft.Maps.SpatialDataService",
+//         async () => {
+//           const geoDataRequestOptions = {
+//             getAllPolygons: true,
+//             getEntityMetadata: true,
+//           };
+//
+//           for (;;) {
+//             generatedLocation = Microsoft.Maps.TestDataGenerator.getLocations(
+//                 1,
+//                 usRect
+//             ) as Microsoft.Maps.Location;
+//             try {
+//               await new Promise<void>((resolveS, rejectS) => {
+//                 if (!mapRef.current) return;
+//
+//                 Microsoft.Maps.SpatialDataService.GeoDataAPIManager.getBoundary(
+//                     generatedLocation,
+//                     geoDataRequestOptions,
+//                     mapRef.current,
+//                     (data) => {
+//                       if (
+//                           data.results.length === 1 &&
+//                           data.results[0].EntityID === usData.entityId.toString()
+//                       ) {
+//                         resolve(generatedLocation);
+//                       } else {
+//                         rejectS();
+//                       }
+//                     }
+//                 );
+//               });
+//               break;
+//             } catch (e) {
+//               continue;
+//             }
+//           }
+//         }
+//     );
+//   });
+// };
