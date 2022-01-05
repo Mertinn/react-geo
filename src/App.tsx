@@ -96,6 +96,11 @@ function App() {
         randomLocation.longitude
       )
     );
+    setIsLocationGuessed(false);
+    setMapBlockedParts({ map: false, button: false, buttonsPanel: false });
+    setMapForceOpacity(false);
+    setGuessMessage("");
+    mapRef.current?.entities.clear();
   };
 
   const handleLoad = () => {
@@ -161,7 +166,7 @@ function App() {
       <div id="street-view" style={{ width: "100%", height: "100vh" }} />
       <Sidemap
         id={"sidemap"}
-        onSubmit={() => handleSubmit()}
+        onSubmit={isLocationGuessed ? handleNext : handleSubmit}
         message={guessMessage}
         isMessageShown={guessMessage !== ""}
         setBlockedParts={setMapBlockedParts}
