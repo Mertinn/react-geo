@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createGlobalStyle } from "styled-components";
+import { LocationsProvider } from "./contexts/locationsContext";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -27,7 +28,9 @@ const GlobalStyle = createGlobalStyle`
 ReactDOM.render(
   <React.StrictMode>
     <GlobalStyle />
-    <App />
+    <LocationsProvider>
+      <App />
+    </LocationsProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
