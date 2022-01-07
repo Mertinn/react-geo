@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Button, ButtonsList, Map, MessageBox, SideContainer } from "./styles";
 import { MdOutlineBlock } from "react-icons/md";
 

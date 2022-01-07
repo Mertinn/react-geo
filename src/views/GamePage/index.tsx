@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import Sidemap from "../components/Sidemap";
-import { randomLocations } from "../geoData";
-import { useLocations } from "../contexts/locationsContext";
+import Sidemap from "../../components/Sidemap";
+import { randomLocations } from "../../geoData";
+import { useLocations } from "../../contexts/locationsContext";
 
 const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
 const defaultCoords = {

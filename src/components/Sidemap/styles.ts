@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { pointerEvents } from "../mixins";
+import v from "../variables";
 
 interface IisBlocked {
   isBlocked: boolean;
@@ -32,7 +33,7 @@ export const Map = styled.div<IisBlocked>`
 export const Button = styled.button<IisBlocked>`
   margin-top: 0.5rem;
   width: 100%;
-  background: #6cb928;
+  background: ${v.primaryColor};
   border: none;
   outline: none;
   padding: 1rem 0.5rem;
@@ -60,7 +61,7 @@ export const ButtonsList = styled.ul<IisBlocked>`
 export const MessageBox = styled.div<{ isShown: boolean }>`
   position: absolute;
   top: 0;
-  background: rgba(108, 185, 40, 0.8);
+  background: ${v.primaryColor + "d1"};
   color: white;
   width: 100%;
   z-index: 999;
