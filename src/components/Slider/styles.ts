@@ -16,11 +16,11 @@ export const StyledSlider = styled.input.attrs({ type: "range" })`
     filter: brightness(1.3);
     opacity: 0.9;
     cursor: pointer;
-    box-shadow: 0 0 0 5px rgba(66, 68, 90, 0.3);
+    box-shadow: 0 0 0 5px rgba(146, 146, 146, 0.3);
     transition: 200ms;
 
     &:active {
-      box-shadow: 0 0 0 7px rgba(66, 68, 90, 0.4);
+      box-shadow: 0 0 0 7px rgba(146, 146, 146, 0.4);
     }
   }
 `;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "../../components/globalStyles";
 import Slider from "../../components/Slider";
 import {
@@ -8,6 +8,8 @@ import {
   SettingValue,
 } from "./styles";
 import { createGlobalStyle } from "styled-components";
+import { useGameSettings } from "../../contexts/gameSettingsContext";
+import { useNavigate } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -18,8 +20,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const HomePage = () => {
-  const [roundsNumber, setRoundsNumber] = useState(5);
-  const [time, setTime] = useState(5);
+  const history = useNavigate();
+  const { settings, setSettings } = useGameSettings();
 
   return (
     <>
@@ -27,26 +29,32 @@ const HomePage = () => {
       <SettingsContainer>
         <SettingContainer>
           <SettingHeader>Rounds</SettingHeader>
-          <SettingValue>{roundsNumber}</SettingValue>
+          <SettingValue>{settings.rounds}</SettingValue>
           <Slider
             min={1}
             max={10}
-            onChange={(value) => setRoundsNumber(value)}
-            defaultValue={roundsNumber}
+            onChange={(value) => setSettings({ ...settings, rounds: value })}
+            defaultValue={settings.rounds}
           />
         </SettingContainer>
 
         <SettingContainer>
           <SettingHeader>Time (minutes)</SettingHeader>
-          <SettingValue>{time}</SettingValue>
+          <SettingValue>{settings.time}</SettingValue>
           <Slider
             min={1}
             max={30}
-            onChange={(value) => setTime(value)}
-            defaultValue={time}
+            onChange={(value) => setSettings({ ...settings, time: value })}
+            defaultValue={settings.time}
           />
         </SettingContainer>
-        <Button shadowColor={"rgba(59,160,52,0.3)"}>Start</Button>
+
+        <Button
+          shadowColor={"rgba(59,160,52,0.3)"}
+          onClick={() => history("/game")}
+        >
+          Start
+        </Button>
       </SettingsContainer>
     </>
   );

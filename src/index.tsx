@@ -4,6 +4,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createGlobalStyle } from "styled-components";
 import { LocationsProvider } from "./contexts/locationsContext";
+import { GameSettingsProvider } from "./contexts/gameSettingsContext";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -30,7 +31,9 @@ ReactDOM.render(
   <React.StrictMode>
     <GlobalStyle />
     <LocationsProvider>
-      <App />
+      <GameSettingsProvider>
+        <App />
+      </GameSettingsProvider>
     </LocationsProvider>
   </React.StrictMode>,
   document.getElementById("root")

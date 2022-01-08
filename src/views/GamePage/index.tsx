@@ -5,8 +5,10 @@ import { useLocations } from "../../contexts/locationsContext";
 
 const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
 const defaultCoords = {
-  streetView:
-    randomLocations[Math.floor(Math.random() * randomLocations.length)],
+  streetView: {
+    latitude: 0,
+    longitude: 0,
+  },
   map: {
     latitude: 37.09024,
     longitude: -95.712891,
@@ -132,6 +134,10 @@ const GamePage = () => {
   };
 
   const handleLoad = () => {
+    const randomIndex = Math.floor(Math.random() * randomLocations.length);
+    defaultCoords.streetView = randomLocations[randomIndex];
+    setCurrentLocationIndex(randomIndex);
+
     mapRef.current = new Microsoft.Maps.Map("#sidemap", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.road,
