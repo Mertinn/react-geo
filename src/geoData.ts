@@ -12,7 +12,7 @@
 export const randomLocations = [
   { latitude: 34.054713, longitude: -118.223331 },
   { latitude: 46.949087, longitude: -109.712911 },
-  { latitude: 30.356127, longitude: -97.796103 },
+  { latitude: 32.776091, longitude: -96.792947 },
   { latitude: 33.743381, longitude: -84.382893 },
   { latitude: 25.818355, longitude: -80.248791 },
   { latitude: 40.67038, longitude: -73.973376 },
