@@ -16,4 +16,5 @@ export const randomLocations = [
   { latitude: 33.743381, longitude: -84.382893 },
   { latitude: 25.818355, longitude: -80.248791 },
   { latitude: 40.67038, longitude: -73.973376 },
+  { latitude: 41.410253, longitude: -75.662698 },
 ];

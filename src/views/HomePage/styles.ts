@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import v from "../../components/variables";
+import { statsContainer } from "../../components/mixins";
 
 export const SettingsContainer = styled.div`
   position: absolute;
@@ -8,11 +8,7 @@ export const SettingsContainer = styled.div`
   transform: translate(-50%, -50%);
   color: white;
   background: rgba(0, 0, 0, 0.3);
-  padding: 2rem;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  ${statsContainer}
 `;
 
 export const SettingContainer = styled.div`

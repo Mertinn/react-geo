@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Sidemap from "../../components/Sidemap";
 import { randomLocations } from "../../geoData";
 import { useLocations } from "../../contexts/locationsContext";
+import { useNavigate } from "react-router-dom";
+import { useGameSettings } from "../../contexts/gameSettingsContext";
 
-const key = "AjcL6XYYflPR9PsoE4ioQusD0JJD896-Bnr0n9r-q5F63MqrwOKoceYANF7ystn-";
+const key = process.env.REACT_APP_API_KEY!;
 const defaultCoords = {
   streetView: {
     latitude: 0,
@@ -28,6 +30,8 @@ const GamePage = () => {
   const [mapForceOpacity, setMapForceOpacity] = useState(false);
   const [isLocationGuessed, setIsLocationGuessed] = useState(false);
   const { locations, addLocation } = useLocations();
+  const { settings } = useGameSettings();
+  const history = useNavigate();
 
   const addPushpin = (
     geoLocation: { latitude: number; longitude: number },
@@ -101,6 +105,10 @@ const GamePage = () => {
   };
 
   const handleNext = () => {
+    if (locations.length === settings.rounds) {
+      history("/summary");
+    }
+
     let randomIndex = 0;
     for (;;) {
       randomIndex = Math.floor(Math.random() * randomLocations.length);
