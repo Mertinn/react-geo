@@ -56,7 +56,7 @@ const SummaryPage = () => {
 
     let pointsNumber = 0;
     for (const location of locations) {
-      pointsNumber = pointsNumber + 5000 - location.distance * 10;
+      pointsNumber = pointsNumber + 5000 - location.distance * 5;
 
       const locationPin = new Microsoft.Maps.Pushpin(location.locationData);
       const guessPin = new Microsoft.Maps.Pushpin(location.guessData);
