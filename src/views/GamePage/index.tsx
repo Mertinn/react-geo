@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Sidemap from "../../components/Sidemap";
-import { randomLocations } from "../../geoData";
+import { randomLocations, usCenter } from "../../geoData";
 import { useLocations } from "../../contexts/locationsContext";
 import { useNavigate } from "react-router-dom";
 import { useGameSettings } from "../../contexts/gameSettingsContext";
@@ -11,10 +11,7 @@ const defaultCoords = {
     latitude: 0,
     longitude: 0,
   },
-  map: {
-    latitude: 37.09024,
-    longitude: -95.712891,
-  },
+  map: usCenter,
 };
 
 const GamePage = () => {
@@ -67,41 +64,56 @@ const GamePage = () => {
 
     addPushpin({ ...defaultCoords.streetView }, "Location", false);
 
-    const pushpins = mapRef.current.entities.getPrimitives();
+    const pushpins = mapRef.current.entities.getPrimitives() as any;
 
     if (!Array.isArray(pushpins)) return;
 
     const polyline = new Microsoft.Maps.Polyline(
-      // @ts-ignore
       [pushpins[0].getLocation(), pushpins[1].getLocation()],
       { strokeThickness: 2 }
     );
     mapRef.current.entities.push(polyline);
 
     Microsoft.Maps.loadModule("Microsoft.Maps.SpatialMath", () => {
+      if (!mapRef.current) return;
+
       const distance = Math.round(
         Microsoft.Maps.SpatialMath.getDistanceTo(
-          // @ts-ignore
           pushpins[0].getLocation(),
-          // @ts-ignore
           pushpins[1].getLocation(),
           Microsoft.Maps.SpatialMath.DistanceUnits.Kilometers
         )
       );
       setGuessMessage(`${distance} kilometers away`);
-      addLocation({ distance, index: currentLocationIndex });
+      addLocation({
+        distance,
+        index: currentLocationIndex,
+        locationData: pushpins[0].getLocation(),
+        guessData: pushpins[1].getLocation(),
+      });
+      const centroid = new Microsoft.Maps.Pushpin(
+        Microsoft.Maps.SpatialMath.Geometry.centroid(polyline)
+      );
+
+      const clamp = (min: number, max: number, number: number) => {
+        if (number < min) {
+          return min;
+        } else if (number > max) {
+          return max;
+        }
+        return number;
+      };
+
+      const zoom = Math.round(clamp(3, 6, (2000 / distance) * 1.5));
+      mapRef.current.setView({
+        zoom: zoom,
+        center: centroid.getLocation(),
+      });
     });
 
     setMapBlockedParts({ map: true, buttonsPanel: true, button: false });
     setMapForceOpacity(true);
     setIsLocationGuessed(true);
-    mapRef.current.setView({
-      zoom: 2.5,
-      center: new Microsoft.Maps.Location(
-        defaultCoords.map.latitude,
-        defaultCoords.map.longitude
-      ),
-    });
   };
 
   const handleNext = () => {
@@ -139,6 +151,7 @@ const GamePage = () => {
     setGuessMessage("");
     setCurrentLocationIndex(randomIndex);
     mapRef.current?.entities.clear();
+    mapRef.current?.setView({ zoom: 3 });
   };
 
   const handleLoad = () => {

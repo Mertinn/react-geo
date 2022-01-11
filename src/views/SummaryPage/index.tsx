@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import Earth from "../../components/Earth";
 import { createGlobalStyle } from "styled-components";
 import { Stars } from "@react-three/drei";
-import { randomLocations } from "../../geoData";
+import { usCenter } from "../../geoData";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -20,16 +20,15 @@ const SummaryPage = () => {
   const [points, setPoints] = useState(0);
 
   useEffect(() => {
-    for (const location of locations) {
-      setPoints((prevState) => prevState + 5000 - location.distance * 10);
-    }
-
     mapRef.current = new Microsoft.Maps.Map("#map", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.road,
       disableStreetside: true,
-      center: new Microsoft.Maps.Location(37.09024, -95.712891),
-      zoom: 3,
+      center: new Microsoft.Maps.Location(
+        usCenter.latitude,
+        usCenter.longitude
+      ),
+      zoom: 2,
       showBreadcrumb: false,
       showDashboard: false,
       showLogo: false,
@@ -39,7 +38,31 @@ const SummaryPage = () => {
       showMapTypeSelector: false,
       showTrafficButton: false,
       showZoomButtons: false,
+      disablePanning: true,
+      disableZooming: true,
     });
+
+    const addConnectedPushpins = (pushpins: Microsoft.Maps.Pushpin[]) => {
+      if (!mapRef.current) return;
+
+      const polyline = new Microsoft.Maps.Polyline(
+        [pushpins[0].getLocation(), pushpins[1].getLocation()],
+        { strokeThickness: 2 }
+      );
+
+      mapRef.current.entities.push(polyline);
+      mapRef.current.entities.push(pushpins);
+    };
+
+    let pointsNumber = 0;
+    for (const location of locations) {
+      pointsNumber = pointsNumber + 5000 - location.distance * 10;
+
+      const locationPin = new Microsoft.Maps.Pushpin(location.locationData);
+      const guessPin = new Microsoft.Maps.Pushpin(location.guessData);
+      addConnectedPushpins([locationPin, guessPin]);
+    }
+    setPoints(pointsNumber);
   }, []);
 
   return (
@@ -67,7 +90,7 @@ const SummaryPage = () => {
       </Canvas>
 
       <SummaryContainer>
-        <h1>You got {points} points</h1>
+        <h1>You got {points} points!</h1>
         <Map id={"map"} />
       </SummaryContainer>
     </>

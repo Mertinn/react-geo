@@ -9,6 +9,11 @@
 //   ],
 // };
 
+export const usCenter = {
+  latitude: 37.09024,
+  longitude: -95.712891,
+};
+
 export const randomLocations = [
   { latitude: 34.054713, longitude: -118.223331 },
   { latitude: 46.949087, longitude: -109.712911 },

@@ -9,6 +9,8 @@ export const SummaryContainer = styled.div`
   background: rgba(255, 255, 255, 0.1);
   color: white;
   ${statsContainer};
+  padding: 3rem;
+  text-align: center;
 `;
 
 export const Map = styled.div`

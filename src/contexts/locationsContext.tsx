@@ -3,6 +3,8 @@ import { createContext, ReactNode, useContext, useState } from "react";
 interface ILocation {
   distance: number;
   index: number;
+  locationData: Microsoft.Maps.Location;
+  guessData: Microsoft.Maps.Location;
 }
 
 interface IContext {
