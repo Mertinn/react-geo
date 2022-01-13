@@ -6,6 +6,10 @@ interface IisBlocked {
   isBlocked: boolean;
 }
 
+interface IisShown {
+  isShown: boolean;
+}
+
 export const SideContainer = styled.div<{
   opacityBlock: boolean;
   forceOpacity: boolean;
@@ -21,13 +25,23 @@ export const SideContainer = styled.div<{
   &:hover {
     ${(props) => !props.opacityBlock && !props.forceOpacity && "opacity: 1;"}
   }
+
+  @media (max-width: ${v.devices.small}) {
+    top: 0;
+    left: 0;
+  }
 `;
 
-export const Map = styled.div<IisBlocked>`
+export const Map = styled.div<IisBlocked & IisShown>`
   width: 100%;
   height: 30vh;
   position: relative;
+  transition: 300ms;
   ${(props) => pointerEvents(props.isBlocked)}
+
+  @media (max-width: ${v.devices.small}) {
+    height: ${(props) => (props.isShown ? "50vh !important" : "0 !important")};
+  }
 `;
 
 export const Button = styled.button<IisBlocked>`
@@ -41,6 +55,9 @@ export const Button = styled.button<IisBlocked>`
   border-radius: 5px;
   cursor: pointer;
   ${(props) => pointerEvents(props.isBlocked)}
+  @media (max-width: ${v.devices.small}) {
+    display: none;
+  }
 `;
 
 export const ButtonsList = styled.ul<IisBlocked>`
@@ -49,13 +66,10 @@ export const ButtonsList = styled.ul<IisBlocked>`
   padding: 0.5rem;
   width: 100%;
   background: rgba(0, 0, 0, 0.4);
-  ${(props) => pointerEvents(props.isBlocked)},
-
-  li {
-    cursor: pointer;
-    display: inline-block;
-    vertical-align: middle;
-  }
+  ${(props) => pointerEvents(props.isBlocked)};
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 `;
 
 export const MessageBox = styled.div<{ isShown: boolean }>`

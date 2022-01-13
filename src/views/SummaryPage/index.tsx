@@ -6,6 +6,7 @@ import Earth from "../../components/Earth";
 import { createGlobalStyle } from "styled-components";
 import { Stars } from "@react-three/drei";
 import { usCenter } from "../../geoData";
+import { Button } from "../../components/globalStyles";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -92,6 +93,7 @@ const SummaryPage = () => {
       <SummaryContainer>
         <h1>You got {points} points!</h1>
         <Map id={"map"} />
+        <Button shadowColor={"rgba(59,160,52,0.3)"}>Play again</Button>
       </SummaryContainer>
     </>
   );

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, ButtonsList, Map, MessageBox, SideContainer } from "./styles";
 import { MdOutlineBlock } from "react-icons/md";
+import { AiOutlineArrowDown } from "react-icons/ai";
 
 interface IProps {
   id: string;
@@ -23,6 +24,8 @@ const Sidemap = ({
   forceOpacity,
   buttonText,
 }: IProps) => {
+  const [isShown, setIsShown] = useState(false);
+
   const handleSubmit = () => {
     onSubmit();
   };
@@ -35,6 +38,11 @@ const Sidemap = ({
     });
   };
 
+  const iconsData = {
+    size: 30,
+    fill: "white",
+  };
+
   return (
     <SideContainer
       opacityBlock={
@@ -44,14 +52,19 @@ const Sidemap = ({
     >
       <ButtonsList isBlocked={blockedParts.buttonsPanel}>
         <li onClick={handleBasicBlock}>
-          <MdOutlineBlock size={30} fill={"white"} />
+          <MdOutlineBlock size={iconsData.size} fill={iconsData.fill} />
+        </li>
+        <li onClick={() => setIsShown((prevState) => !prevState)}>
+          <AiOutlineArrowDown size={iconsData.size} fill={iconsData.fill} />
         </li>
       </ButtonsList>
-      <Map id={id} isBlocked={blockedParts.map}>
+
+      <Map id={id} isBlocked={blockedParts.map} isShown={isShown}>
         <MessageBox isShown={isMessageShown}>
           <p>{message}</p>
         </MessageBox>
       </Map>
+
       <Button onClick={handleSubmit} isBlocked={blockedParts.button}>
         {buttonText}
       </Button>
