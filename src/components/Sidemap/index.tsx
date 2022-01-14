@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Button, ButtonsList, Map, MessageBox, SideContainer } from "./styles";
+import {
+  Button,
+  ButtonsList,
+  HiddenDesktopLi,
+  HiddenMobileLi,
+  Map,
+  MessageBox,
+  SideContainer,
+} from "./styles";
 import { MdOutlineBlock } from "react-icons/md";
 import { AiOutlineArrowDown } from "react-icons/ai";
 
@@ -49,17 +57,19 @@ const Sidemap = ({
         blockedParts.map || blockedParts.button || blockedParts.buttonsPanel
       }
       forceOpacity={forceOpacity}
+      isMapShown={isShown}
     >
       <ButtonsList isBlocked={blockedParts.buttonsPanel}>
-        <li onClick={handleBasicBlock}>
+        <HiddenMobileLi onClick={handleBasicBlock}>
           <MdOutlineBlock size={iconsData.size} fill={iconsData.fill} />
-        </li>
-        <li onClick={() => setIsShown((prevState) => !prevState)}>
+        </HiddenMobileLi>
+
+        <HiddenDesktopLi onClick={() => setIsShown((prevState) => !prevState)}>
           <AiOutlineArrowDown size={iconsData.size} fill={iconsData.fill} />
-        </li>
+        </HiddenDesktopLi>
       </ButtonsList>
 
-      <Map id={id} isBlocked={blockedParts.map} isShown={isShown}>
+      <Map id={id} isBlocked={blockedParts.map}>
         <MessageBox isShown={isMessageShown}>
           <p>{message}</p>
         </MessageBox>

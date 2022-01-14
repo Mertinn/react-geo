@@ -1,47 +1,16 @@
-import styled from "styled-components";
-import { pointerEvents } from "../mixins";
+import styled, { AnyStyledComponent } from "styled-components";
+import { desktopHidden, mobileHidden, pointerEvents } from "../mixins";
 import v from "../variables";
 
 interface IisBlocked {
   isBlocked: boolean;
 }
 
-interface IisShown {
-  isShown: boolean;
-}
-
-export const SideContainer = styled.div<{
-  opacityBlock: boolean;
-  forceOpacity: boolean;
-}>`
-  position: absolute;
-  left: 10px;
-  bottom: 20%;
-  width: 30%;
-  height: auto;
-  transition: 200ms;
-  opacity: ${(props) => (props.forceOpacity ? 1 : 0.2)};
-
-  &:hover {
-    ${(props) => !props.opacityBlock && !props.forceOpacity && "opacity: 1;"}
-  }
-
-  @media (max-width: ${v.devices.small}) {
-    top: 0;
-    left: 0;
-  }
-`;
-
-export const Map = styled.div<IisBlocked & IisShown>`
+export const Map = styled.div<IisBlocked>`
   width: 100%;
   height: 30vh;
   position: relative;
-  transition: 300ms;
   ${(props) => pointerEvents(props.isBlocked)}
-
-  @media (max-width: ${v.devices.small}) {
-    height: ${(props) => (props.isShown ? "50vh !important" : "0 !important")};
-  }
 `;
 
 export const Button = styled.button<IisBlocked>`
@@ -55,8 +24,40 @@ export const Button = styled.button<IisBlocked>`
   border-radius: 5px;
   cursor: pointer;
   ${(props) => pointerEvents(props.isBlocked)}
+`;
+
+export const SideContainer = styled.div<{
+  opacityBlock: boolean;
+  forceOpacity: boolean;
+  isMapShown: boolean;
+}>`
+  position: absolute;
+  left: 10px;
+  bottom: 20%;
+  width: 30%;
+  height: auto;
+  opacity: ${(props) => (props.forceOpacity ? 1 : 0.2)};
+  z-index: 999;
+  transition: 500ms;
+
+  @media (min-width: calc(${v.devices.small} + 1px)) {
+    &:hover {
+      ${(props) => !props.opacityBlock && !props.forceOpacity && "opacity: 1;"}
+    }
+  }
+
   @media (max-width: ${v.devices.small}) {
-    display: none;
+    top: 0;
+    left: 0;
+    width: ${(props) => (props.isMapShown ? "100%" : "auto")};
+    opacity: ${(props) => (props.isMapShown ? 1 : 0.2)};
+    ${Map} {
+      height: ${(props) =>
+        props.isMapShown ? "50vh !important" : "0 !important"};
+    }
+    ${Button} {
+      display: ${(props) => (props.isMapShown ? "block" : "none")};
+    }
   }
 `;
 
@@ -70,6 +71,18 @@ export const ButtonsList = styled.ul<IisBlocked>`
   display: flex;
   align-items: center;
   gap: 1rem;
+
+  @media (max-width: ${v.devices.small}) {
+    margin-bottom: 0;
+  }
+`;
+
+export const HiddenMobileLi = styled.li`
+  ${mobileHidden}
+`;
+
+export const HiddenDesktopLi = styled.li`
+  ${desktopHidden}
 `;
 
 export const MessageBox = styled.div<{ isShown: boolean }>`
