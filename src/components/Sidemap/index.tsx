@@ -14,23 +14,23 @@ import { AiOutlineArrowDown } from "react-icons/ai";
 interface IProps {
   id: string;
   onSubmit: () => void;
-  isMessageShown: boolean;
   message: string;
   blockedParts: { buttonsPanel: boolean; map: boolean; button: boolean };
   setBlockedParts: React.Dispatch<React.SetStateAction<IProps["blockedParts"]>>;
   forceOpacity: boolean;
   buttonText: string;
+  time: string;
 }
 
 const Sidemap = ({
   id,
   onSubmit,
   message,
-  isMessageShown,
   blockedParts,
   setBlockedParts,
   forceOpacity,
   buttonText,
+  time,
 }: IProps) => {
   const [isShown, setIsShown] = useState(false);
 
@@ -67,10 +67,14 @@ const Sidemap = ({
         <HiddenDesktopLi onClick={() => setIsShown((prevState) => !prevState)}>
           <AiOutlineArrowDown size={iconsData.size} fill={iconsData.fill} />
         </HiddenDesktopLi>
+
+        <li>
+          <p>{time}</p>
+        </li>
       </ButtonsList>
 
       <Map id={id} isBlocked={blockedParts.map}>
-        <MessageBox isShown={isMessageShown}>
+        <MessageBox isShown={message !== ""}>
           <p>{message}</p>
         </MessageBox>
       </Map>

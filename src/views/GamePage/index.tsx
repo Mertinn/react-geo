@@ -4,6 +4,7 @@ import { randomLocations, usCenter } from "../../geoData";
 import { useLocations } from "../../contexts/locationsContext";
 import { useNavigate } from "react-router-dom";
 import { useGameSettings } from "../../contexts/gameSettingsContext";
+import useTimer from "../../hooks/useTimer";
 
 const key = process.env.REACT_APP_API_KEY!;
 const defaultCoords = {
@@ -29,6 +30,7 @@ const GamePage = () => {
   const { locations, addLocation } = useLocations();
   const { settings } = useGameSettings();
   const history = useNavigate();
+  const timer = useTimer();
 
   const addPushpin = (
     geoLocation: { latitude: number; longitude: number },
@@ -129,9 +131,7 @@ const GamePage = () => {
         return;
       }
 
-      if (locations.some((location) => location.index === randomIndex)) {
-        continue;
-      } else {
+      if (!locations.some((location) => location.index === randomIndex)) {
         break;
       }
     }
@@ -222,11 +222,11 @@ const GamePage = () => {
         id={"sidemap"}
         onSubmit={isLocationGuessed ? handleNext : handleSubmit}
         message={guessMessage}
-        isMessageShown={guessMessage !== ""}
         setBlockedParts={setMapBlockedParts}
         blockedParts={mapBlockedParts}
         forceOpacity={mapForceOpacity}
         buttonText={isLocationGuessed ? "Next" : "Guess"}
+        time={`${timer.time}/${settings.time * 60}`}
       />
     </>
   );

@@ -71,6 +71,7 @@ export const ButtonsList = styled.ul<IisBlocked>`
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: white;
 
   @media (max-width: ${v.devices.small}) {
     margin-bottom: 0;
