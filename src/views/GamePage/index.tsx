@@ -215,6 +215,12 @@ const GamePage = () => {
     handleLoad();
   }, []);
 
+  useEffect(() => {
+    if (timer.time === settings.time * 60) {
+      history("/summary");
+    }
+  }, [timer.time]);
+
   return (
     <>
       <div id="street-view" style={{ width: "100%", height: "100vh" }} />
@@ -234,8 +240,8 @@ const GamePage = () => {
 
 export default GamePage;
 
-// Function to generate random location, currently checking if there is a
-// street side view on a given location is impossible
+// Function to generate random location,
+// currently checking if there is a street side view on a given location is impossible
 // const getRandomLocation = () => {
 //   const northwest = new Microsoft.Maps.Location(
 //       usData.bounds[0].latitude,

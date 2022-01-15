@@ -7,6 +7,7 @@ import { createGlobalStyle } from "styled-components";
 import { Stars } from "@react-three/drei";
 import { usCenter } from "../../geoData";
 import { Button } from "../../components/globalStyles";
+import { useNavigate } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -19,6 +20,7 @@ const SummaryPage = () => {
   const { locations } = useLocations();
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
   const [points, setPoints] = useState(0);
+  const history = useNavigate();
 
   useEffect(() => {
     mapRef.current = new Microsoft.Maps.Map("#map", {
@@ -93,7 +95,12 @@ const SummaryPage = () => {
       <SummaryContainer>
         <h1>You got {points} points!</h1>
         <Map id={"map"} />
-        <Button shadowColor={"rgba(59,160,52,0.3)"}>Play again</Button>
+        <Button
+          shadowColor={"rgba(59,160,52,0.3)"}
+          onClick={() => history("/")}
+        >
+          Play again
+        </Button>
       </SummaryContainer>
     </>
   );
