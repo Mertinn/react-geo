@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createGlobalStyle } from "styled-components";
 import { LocationsProvider } from "./contexts/locationsContext";
 import { GameSettingsProvider } from "./contexts/gameSettingsContext";
+import { BonusPointsProvider } from "./contexts/bonusPointsContext";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -31,9 +32,11 @@ ReactDOM.render(
   <React.StrictMode>
     <GlobalStyle />
     <LocationsProvider>
-      <GameSettingsProvider>
-        <App />
-      </GameSettingsProvider>
+      <BonusPointsProvider>
+        <GameSettingsProvider>
+          <App />
+        </GameSettingsProvider>
+      </BonusPointsProvider>
     </LocationsProvider>
   </React.StrictMode>,
   document.getElementById("root")

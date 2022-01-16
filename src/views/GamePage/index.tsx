@@ -5,6 +5,7 @@ import { useLocations } from "../../contexts/locationsContext";
 import { useNavigate } from "react-router-dom";
 import { useGameSettings } from "../../contexts/gameSettingsContext";
 import useTimer from "../../hooks/useTimer";
+import { useBonusPoints } from "../../contexts/bonusPointsContext";
 
 const key = process.env.REACT_APP_API_KEY!;
 const defaultCoords = {
@@ -31,6 +32,7 @@ const GamePage = () => {
   const { settings } = useGameSettings();
   const history = useNavigate();
   const timer = useTimer();
+  const { setBonusPoints } = useBonusPoints();
 
   const addPushpin = (
     geoLocation: { latitude: number; longitude: number },
@@ -217,6 +219,13 @@ const GamePage = () => {
 
   useEffect(() => {
     if (timer.time === settings.time * 60) {
+      let bonusPoints = 0;
+      for (let i = 0; i < settings.rounds - locations.length; i++) {
+        bonusPoints -= 1000;
+      }
+
+      setBonusPoints(bonusPoints);
+
       history("/summary");
     }
   }, [timer.time]);
@@ -231,7 +240,7 @@ const GamePage = () => {
         setBlockedParts={setMapBlockedParts}
         blockedParts={mapBlockedParts}
         forceOpacity={mapForceOpacity}
-        buttonText={isLocationGuessed ? "Next" : "Guess"}
+        buttonText={isLocationGuessed ? "N  ext" : "Guess"}
         time={`${timer.time}/${settings.time * 60}`}
       />
     </>

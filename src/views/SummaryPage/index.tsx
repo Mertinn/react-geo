@@ -8,6 +8,7 @@ import { Stars } from "@react-three/drei";
 import { usCenter } from "../../geoData";
 import { Button } from "../../components/globalStyles";
 import { useNavigate } from "react-router-dom";
+import { useBonusPoints } from "../../contexts/bonusPointsContext";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -21,6 +22,7 @@ const SummaryPage = () => {
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
   const [points, setPoints] = useState(0);
   const history = useNavigate();
+  const { bonusPoints } = useBonusPoints();
 
   useEffect(() => {
     mapRef.current = new Microsoft.Maps.Map("#map", {
@@ -65,7 +67,7 @@ const SummaryPage = () => {
       const guessPin = new Microsoft.Maps.Pushpin(location.guessData);
       addConnectedPushpins([locationPin, guessPin]);
     }
-    setPoints(pointsNumber);
+    setPoints(pointsNumber + bonusPoints);
   }, []);
 
   return (
