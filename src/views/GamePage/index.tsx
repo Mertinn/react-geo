@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGameSettings } from "../../contexts/gameSettingsContext";
 import useTimer from "../../hooks/useTimer";
 import { useBonusPoints } from "../../contexts/bonusPointsContext";
+import { initialize, whenLoaded } from "bing-maps-loader";
 
 const key = process.env.REACT_APP_API_KEY!;
 const defaultCoords = {
@@ -15,6 +16,8 @@ const defaultCoords = {
   },
   map: usCenter,
 };
+
+initialize(key);
 
 const GamePage = () => {
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
@@ -210,11 +213,7 @@ const GamePage = () => {
   };
 
   useEffect(() => {
-    // const script = document.getElementById("microsoft");
-    // if (!script) return;
-    //
-    // script.addEventListener("load", () => handleLoad());
-    handleLoad();
+    whenLoaded.then(() => handleLoad());
   }, []);
 
   useEffect(() => {
@@ -240,7 +239,7 @@ const GamePage = () => {
         setBlockedParts={setMapBlockedParts}
         blockedParts={mapBlockedParts}
         forceOpacity={mapForceOpacity}
-        buttonText={isLocationGuessed ? "N  ext" : "Guess"}
+        buttonText={isLocationGuessed ? "Next" : "Guess"}
         time={`${timer.time}/${settings.time * 60}`}
       />
     </>

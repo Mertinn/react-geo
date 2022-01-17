@@ -9,6 +9,7 @@ import { usCenter } from "../../geoData";
 import { Button } from "../../components/globalStyles";
 import { useNavigate } from "react-router-dom";
 import { useBonusPoints } from "../../contexts/bonusPointsContext";
+import { initialize, whenLoaded } from "bing-maps-loader";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -17,6 +18,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const key = process.env.REACT_APP_API_KEY!;
+
+initialize(key);
 const SummaryPage = () => {
   const { locations } = useLocations();
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
@@ -24,7 +27,7 @@ const SummaryPage = () => {
   const history = useNavigate();
   const { bonusPoints } = useBonusPoints();
 
-  useEffect(() => {
+  const handleLoad = () => {
     mapRef.current = new Microsoft.Maps.Map("#map", {
       credentials: key,
       mapTypeId: Microsoft.Maps.MapTypeId.road,
@@ -68,6 +71,10 @@ const SummaryPage = () => {
       addConnectedPushpins([locationPin, guessPin]);
     }
     setPoints(pointsNumber + bonusPoints);
+  };
+
+  useEffect(() => {
+    whenLoaded.then(() => handleLoad());
   }, []);
 
   return (
