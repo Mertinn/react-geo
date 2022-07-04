@@ -124,6 +124,8 @@ const GamePage = () => {
   };
 
   const handleNext = () => {
+    console.log(locations.length, settings);
+
     if (locations.length === settings.rounds) {
       history("/summary");
     }

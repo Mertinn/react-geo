@@ -8,7 +8,7 @@ export const SettingsContainer = styled.div`
   transform: translate(-50%, -50%);
   color: white;
   background: rgba(0, 0, 0, 0.3);
-  ${statsContainer}
+  ${statsContainer};
 `;
 
 export const SettingContainer = styled.div`

@@ -21,7 +21,7 @@ const key = process.env.REACT_APP_API_KEY!;
 
 initialize(key);
 const SummaryPage = () => {
-  const { locations } = useLocations();
+  const { locations, setLocations } = useLocations();
   const mapRef = useRef<Microsoft.Maps.Map | null>(null);
   const [points, setPoints] = useState(0);
   const history = useNavigate();
@@ -77,6 +77,11 @@ const SummaryPage = () => {
     whenLoaded.then(() => handleLoad());
   }, []);
 
+  const handlePlay = () => {
+    setLocations([]);
+    history("/");
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -106,7 +111,7 @@ const SummaryPage = () => {
         <Map id={"map"} />
         <Button
           shadowColor={"rgba(59,160,52,0.3)"}
-          onClick={() => history("/")}
+          onClick={() => handlePlay()}
         >
           Play again
         </Button>

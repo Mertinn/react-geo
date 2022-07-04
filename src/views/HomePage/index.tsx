@@ -10,10 +10,11 @@ import {
 import { createGlobalStyle } from "styled-components";
 import { useGameSettings } from "../../contexts/gameSettingsContext";
 import { useNavigate } from "react-router-dom";
+import LandscapeImage from "../../assets/evening-landscape-13530956185Aw.jpg";
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background: url('https://reddicediaries.com/wp-content/uploads/2019/10/evening-landscape-13530956185Aw.jpg');
+    background: url(${LandscapeImage});
     backdrop-filter: blur(60px);
     height: 100vh;
   }

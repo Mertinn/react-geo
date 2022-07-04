@@ -10,6 +10,7 @@ interface ILocation {
 interface IContext {
   locations: ILocation[];
   addLocation: (location: ILocation) => void;
+  setLocations: (locations: ILocation[]) => void;
 }
 
 const LocationsContext = createContext<IContext>(null as unknown as IContext);
@@ -22,7 +23,7 @@ export const LocationsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <LocationsContext.Provider value={{ locations, addLocation }}>
+    <LocationsContext.Provider value={{ locations, addLocation, setLocations }}>
       {children}
     </LocationsContext.Provider>
   );
