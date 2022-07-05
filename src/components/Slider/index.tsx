@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { SliderContainer, StyledSlider } from "./styles";
+import React from "react";
+import { StyledSlider } from "./styles";
 
 interface IProps {
   max: number;

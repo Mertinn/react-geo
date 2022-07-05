@@ -16,7 +16,6 @@ const GlobalStyle = createGlobalStyle`
   body {
     background: url(${LandscapeImage});
     backdrop-filter: blur(60px);
-    height: 100vh;
   }
 `;
 

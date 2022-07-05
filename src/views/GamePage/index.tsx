@@ -215,7 +215,9 @@ const GamePage = () => {
   };
 
   useEffect(() => {
-    whenLoaded.then(() => handleLoad());
+    whenLoaded.then(() => {
+      handleLoad();
+    });
   }, []);
 
   useEffect(() => {

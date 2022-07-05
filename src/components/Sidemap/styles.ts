@@ -35,7 +35,7 @@ export const SideContainer = styled.div<{
   left: 10px;
   bottom: 20%;
   width: 30%;
-  height: auto;
+  height: fit-content;
   opacity: ${(props) => (props.forceOpacity ? 1 : 0.2)};
   z-index: 999;
   transition: 500ms;
@@ -79,11 +79,11 @@ export const ButtonsList = styled.ul<IisBlocked>`
 `;
 
 export const HiddenMobileLi = styled.li`
-  ${mobileHidden}
+  ${mobileHidden};
 `;
 
 export const HiddenDesktopLi = styled.li`
-  ${desktopHidden}
+  ${desktopHidden};
 `;
 
 export const MessageBox = styled.div<{ isShown: boolean }>`

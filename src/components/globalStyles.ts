@@ -1,6 +1,5 @@
-import styled, { AnyStyledComponent } from "styled-components";
+import styled from "styled-components";
 import v from "./variables";
-import { desktopHidden, mobileHidden } from "./mixins";
 
 export const Button = styled.button<{ shadowColor?: string }>`
   border: none;

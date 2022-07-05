@@ -17,6 +17,9 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     background: #353539;
+    position: fixed;
+    height: 100vh;
+    width: 100%;
   }
   
   svg { 
