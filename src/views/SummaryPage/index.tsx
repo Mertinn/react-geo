@@ -13,7 +13,7 @@ import { initialize, whenLoaded } from "bing-maps-loader";
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background: black;
+    background: black !important;
   }
 `;
 

@@ -14,8 +14,8 @@ import LandscapeImage from "../../assets/evening-landscape-13530956185Aw.jpg";
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background: url(${LandscapeImage});
-    backdrop-filter: blur(60px);
+    background: url(${LandscapeImage}) !important;
+    backdrop-filter: blur(60px) !important;
   }
 `;
 
@@ -26,6 +26,7 @@ const HomePage = () => {
   return (
     <>
       <GlobalStyle />
+
       <SettingsContainer>
         <SettingContainer>
           <SettingHeader>Rounds</SettingHeader>
