@@ -10,6 +10,8 @@ https://react-geoguessr-clone.netlify.app/
 
 Clone down this repository. You will need `node`, `npm` and `yarn` installed globally on your machine.  
 
+Create an .env file in the directory and enter your key after `REACT_APP_API_KEY=`.
+
 Installation:
 
 `yarn install`
